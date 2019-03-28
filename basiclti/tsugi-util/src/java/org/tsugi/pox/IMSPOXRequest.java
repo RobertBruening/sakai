@@ -173,9 +173,18 @@ public class IMSPOXRequest {
 	public void loadFromRequest(HttpServletRequest request) 
 	{
 		String contentType = request.getContentType();
-		if ( ! "application/xml".equals(contentType) ) {
+		String baseContentType = contentType;
+
+		try {
+			MimeType mimeType = new MimeType(contentType);
+			baseContentType = mimeType.getBaseType();
+		} catch (MimeTypeParseException e){
+			//Do nothing
+		}
+
+		if ( ! "application/xml".equals(baseContentType) ) {
 			errorMessage = "Content Type must be application/xml";
-		 	log.info("{}\n{}", errorMessage, contentType);
+		 	log.info("{}\n{}", errorMessage, baseContentType);
 			return;
 		}
 
